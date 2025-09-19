@@ -78,6 +78,20 @@ function HomePage() {
               <span className="stat">KPI дашборд</span>
             </div>
           </Link>
+
+          <Link to="/price-elasticity" className="module-card">
+            <div className="module-icon">💰</div>
+            <h3>Ценовая эластичность</h3>
+            <p>
+              Анализ влияния изменения цен на объем продаж по категориям товаров 
+              с коэффициентами эластичности и рекомендациями.
+            </p>
+            <div className="module-stats">
+              <span className="stat">Регрессионный анализ</span>
+              <span className="stat">5 категорий</span>
+              <span className="stat">Визуализация</span>
+            </div>
+          </Link>
         </div>
       </div>
 

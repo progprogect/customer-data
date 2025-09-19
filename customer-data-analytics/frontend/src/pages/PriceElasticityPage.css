@@ -1,0 +1,688 @@
+/* Упрощенная страница ценовой эластичности */
+.price-elasticity-page {
+  padding: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+/* Заголовок страницы */
+.page-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.page-header h1 {
+  color: #f8fafc;
+  margin-bottom: 16px;
+  font-size: 32px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.page-header p {
+  color: #cbd5e1;
+  font-size: 18px;
+  font-weight: 400;
+}
+
+/* Загрузка */
+.loading {
+  text-align: center;
+  padding: 60px;
+  font-size: 18px;
+  color: #cbd5e1;
+  background: #1e293b;
+  border-radius: 12px;
+  border: 1px solid #334155;
+}
+
+/* Ошибка */
+.error-message {
+  background: #1e293b;
+  border: 1px solid #dc2626;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 32px;
+}
+
+.error-message h3 {
+  color: #fca5a5;
+  margin-bottom: 12px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.error-message p {
+  color: #fecaca;
+  margin: 0;
+}
+
+/* Выбор категории */
+.category-selector {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border: 1px solid #334155;
+  border-radius: 16px;
+  padding: 32px;
+  margin-bottom: 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.category-selector::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 50%, #10b981 100%);
+}
+
+.category-selector label {
+  display: block;
+  font-weight: 600;
+  color: #f8fafc;
+  margin-bottom: 16px;
+  font-size: 18px;
+  text-align: center;
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.category-selector select {
+  width: 100%;
+  padding: 16px 20px;
+  border: 2px solid #475569;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color: #f8fafc;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23cbd5e1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 20px;
+  padding-right: 50px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.category-selector select:hover {
+  border-color: #64748b;
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  transform: translateY(-1px);
+}
+
+.category-selector select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+}
+
+/* ТОП-3 категории */
+.top-categories-section {
+  margin-bottom: 40px;
+}
+
+.top-categories-section h2 {
+  color: #f8fafc;
+  margin-bottom: 24px;
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.top-categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.top-category-card {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 16px;
+  padding: 24px;
+  position: relative;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.top-category-card:hover {
+  border-color: #475569;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.2);
+}
+
+.rank-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  color: white;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.top-category-card h3 {
+  color: #f8fafc;
+  margin-bottom: 16px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.sensitivity-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.sensitivity-icon {
+  font-size: 24px;
+}
+
+.sensitivity-level {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.business-advice {
+  color: #6ee7b7;
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+/* Анализ категории */
+.analysis-section {
+  margin-bottom: 40px;
+  background: #0f172a;
+  border-radius: 16px;
+  padding: 32px;
+  border: 1px solid #334155;
+}
+
+.analysis-section h2 {
+  color: #f8fafc;
+  margin-bottom: 24px;
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.business-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.business-metric-card {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.business-metric-card:hover {
+  border-color: #475569;
+  transform: translateY(-2px);
+}
+
+.metric-icon {
+  font-size: 32px;
+  margin-bottom: 16px;
+}
+
+.business-metric-card h3 {
+  color: #f8fafc;
+  margin-bottom: 16px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.analysis-card {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.analysis-card:hover {
+  border-color: #475569;
+  transform: translateY(-2px);
+}
+
+.card-icon {
+  font-size: 32px;
+  margin-bottom: 16px;
+}
+
+.analysis-card h3 {
+  color: #f8fafc;
+  margin-bottom: 16px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+
+.sensitivity-display {
+  margin-bottom: 16px;
+}
+
+/* Стили для блока анализа категории */
+.business-metric-card .sensitivity-badge {
+  padding: 10px 20px;
+  font-size: 15px;
+  font-weight: 700;
+  margin: 8px 0;
+  display: inline-block;
+  min-width: 100px;
+}
+
+.sensitivity-badge {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+/* Специфичные стили для топ-карточек */
+.top-category-card .sensitivity-badge {
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 700;
+  margin: 12px 0;
+  display: inline-block;
+  min-width: 120px;
+}
+
+.card-description {
+  color: #cbd5e1;
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.recommendation-text {
+  color: #6ee7b7;
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Сценарии изменения цен */
+.scenarios-section {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 16px;
+  padding: 32px;
+}
+
+.scenarios-section h3 {
+  color: #f8fafc;
+  margin-bottom: 16px;
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.data-source-note {
+  color: #94a3b8;
+  text-align: center;
+  font-size: 14px;
+  margin-bottom: 24px;
+  font-style: italic;
+}
+
+.scenarios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.scenario-card {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 24px;
+  transition: all 0.3s ease;
+}
+
+.scenario-card:hover {
+  border-color: #475569;
+  transform: translateY(-2px);
+}
+
+.scenario-card h4 {
+  color: #f8fafc;
+  margin-bottom: 20px;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.scenario-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.scenario-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #0f172a;
+  border-radius: 8px;
+  border: 1px solid #334155;
+}
+
+.price-change {
+  font-weight: 600;
+  font-size: 16px;
+  color: #f8fafc;
+}
+
+.arrow {
+  color: #cbd5e1;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.demand-change {
+  font-weight: 600;
+  font-size: 16px;
+  color: #10b981;
+}
+
+/* График */
+.chart-section {
+  margin-bottom: 40px;
+}
+
+.chart-section h2 {
+  color: #f8fafc;
+  margin-bottom: 16px;
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.chart-description {
+  color: #cbd5e1;
+  text-align: center;
+  font-size: 16px;
+  margin-bottom: 16px;
+  font-style: italic;
+}
+
+.chart-legend {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #cbd5e1;
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  border: 1px solid;
+}
+
+.min-color {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: #10b981;
+}
+
+.max-color {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: #ef4444;
+}
+
+.chart-container {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 16px;
+  padding: 40px 32px 32px 40px;
+  position: relative;
+  height: 450px;
+  box-sizing: border-box;
+}
+
+.chart-scatter {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #0f172a;
+  border-radius: 8px;
+  border: 1px solid #334155;
+}
+
+.data-point {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #3b82f6;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.data-point:hover {
+  background: #60a5fa;
+  transform: scale(1.5);
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+}
+
+.chart-axes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+
+.x-axis {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top: 2px solid #475569;
+  padding: 8px 0;
+}
+
+.x-axis span {
+  color: #cbd5e1;
+  font-weight: 600;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.axis-labels {
+  position: absolute;
+  bottom: 8px;
+  left: 25px;
+  right: 25px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.axis-min {
+  color: #10b981;
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(16, 185, 129, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.axis-max {
+  color: #ef4444;
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(239, 68, 68, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.y-axis {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 2px solid #475569;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  padding: 0 8px;
+}
+
+.y-axis span {
+  color: #cbd5e1;
+  font-weight: 600;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.y-axis .axis-labels {
+  position: absolute;
+  left: 8px;
+  top: 25px;
+  bottom: 25px;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: space-between;
+  align-items: flex-start;
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 500;
+  text-align: left;
+  width: 30px;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .price-elasticity-page {
+    padding: 16px;
+  }
+  
+  .top-categories-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .analysis-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .scenarios-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .chart-container {
+    height: 350px;
+    padding: 20px 16px 16px 20px;
+  }
+  
+  .x-axis {
+    height: 40px;
+  }
+  
+  .y-axis {
+    width: 40px;
+  }
+  
+  .axis-labels {
+    font-size: 10px;
+  }
+  
+  .y-axis .axis-labels {
+    left: 6px;
+    align-items: flex-start;
+    text-align: left;
+    width: 25px;
+    flex-direction: column-reverse;
+  }
+  
+  .axis-min {
+    font-size: 9px;
+    padding: 1px 4px;
+  }
+  
+  .axis-max {
+    font-size: 9px;
+    padding: 1px 4px;
+  }
+  
+  .x-axis span, .y-axis span {
+    font-size: 12px;
+  }
+  
+  .chart-legend {
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  
+  .legend-item {
+    font-size: 12px;
+  }
+  
+  .legend-color {
+    width: 10px;
+    height: 10px;
+  }
+  
+  /* Адаптивные стили для кнопок чувствительности */
+  .top-category-card .sensitivity-badge {
+    padding: 10px 20px;
+    font-size: 14px;
+    min-width: 100px;
+  }
+  
+  .business-metric-card .sensitivity-badge {
+    padding: 8px 16px;
+    font-size: 13px;
+    min-width: 80px;
+  }
+}

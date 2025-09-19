@@ -8,6 +8,7 @@ import SegmentationPage from './pages/SegmentationPage.tsx'
 import PurchasePredictionPage from './pages/PurchasePredictionPage.tsx'
 import RecommendationsPage from './pages/RecommendationsPage.tsx'
 import ChurnPredictionPage from './pages/ChurnPredictionPage.tsx'
+import PriceElasticityPage from './pages/PriceElasticityPage.tsx'
 import { FiltersProvider } from './store/filters.tsx'
 
 const router = createBrowserRouter([
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
       {
         path: 'churn-prediction',
         element: <ChurnPredictionPage />,
+      },
+      {
+        path: 'price-elasticity',
+        element: <PriceElasticityPage />,
       },
     ],
   },

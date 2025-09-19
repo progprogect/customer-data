@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import uvicorn
 
-from routes import analytics, recommendations, users, products, segments, ml_predictions, churn_analytics, real_users, simple_real_users, direct_db
+from routes import analytics, recommendations, users, products, segments, ml_predictions, churn_analytics, real_users, simple_real_users, direct_db, price_elasticity
 from middleware.logging import setup_logging
 from services.ml_service import ml_service
 import sys
@@ -75,6 +75,7 @@ app.include_router(churn_analytics.router, prefix="/api/v1/churn", tags=["churn-
 app.include_router(real_users.router, prefix="/api/v1", tags=["real-data"])
 app.include_router(simple_real_users.router, prefix="/api/v1", tags=["simple-real-data"])
 app.include_router(direct_db.router, prefix="/api/v1", tags=["direct-db"])
+app.include_router(price_elasticity.router, prefix="/api/v1/price-elasticity", tags=["price-elasticity"])
 
 
 @app.get("/")

@@ -1,0 +1,103 @@
+import { Link } from 'react-router-dom'
+
+function HomePage() {
+  return (
+    <div className="home-page">
+      <div className="hero-section">
+        <h1>Добро пожаловать в Customer Data Analytics</h1>
+        <p className="hero-subtitle">
+          Платформа для анализа поведения клиентов и сегментации аудитории
+        </p>
+      </div>
+
+      <div className="analytics-modules">
+        <h2>Модули аналитики</h2>
+        <div className="modules-grid">
+          <Link to="/segmentation" className="module-card">
+            <div className="module-icon">📊</div>
+            <h3>Сегментация клиентов</h3>
+            <p>
+              Анализ распределения пользователей по сегментам, динамика изменений 
+              и матрица переходов между кластерами.
+            </p>
+            <div className="module-stats">
+              <span className="stat">3 виджета</span>
+              <span className="stat">Реальные данные</span>
+              <span className="stat">Интерактивные фильтры</span>
+            </div>
+          </Link>
+
+          <div className="module-card module-coming-soon">
+            <div className="module-icon">🛒</div>
+            <h3>Анализ продаж</h3>
+            <p>
+              Аналитика товаров, категорий, трендов продаж 
+              и поведения покупателей.
+            </p>
+            <div className="coming-soon-badge">Скоро</div>
+          </div>
+
+          <div className="module-card module-coming-soon">
+            <div className="module-icon">🎯</div>
+            <h3>Рекомендации</h3>
+            <p>
+              Персонализированные рекомендации товаров на основе 
+              машинного обучения.
+            </p>
+            <div className="coming-soon-badge">Скоро</div>
+          </div>
+
+          <Link to="/purchase-prediction" className="module-card">
+            <div className="module-icon">📈</div>
+            <h3>Прогноз покупок</h3>
+            <p>
+              Предсказание вероятности покупки в ближайшие 30 дней 
+              на основе машинного обучения.
+            </p>
+            <div className="module-stats">
+              <span className="stat">ML модель</span>
+              <span className="stat">Интерпретируемость</span>
+              <span className="stat">Real-time API</span>
+            </div>
+          </Link>
+        </div>
+      </div>
+
+      <div className="platform-features">
+        <h2>Возможности платформы</h2>
+        <div className="features-list">
+          <div className="feature">
+            <span className="feature-icon">🔄</span>
+            <div>
+              <h4>Обновление в реальном времени</h4>
+              <p>Данные обновляются ежедневно из продуктивной базы</p>
+            </div>
+          </div>
+          <div className="feature">
+            <span className="feature-icon">📊</span>
+            <div>
+              <h4>Интерактивные дашборды</h4>
+              <p>Современные графики с возможностью фильтрации и drill-down</p>
+            </div>
+          </div>
+          <div className="feature">
+            <span className="feature-icon">🤖</span>
+            <div>
+              <h4>Машинное обучение</h4>
+              <p>Алгоритмы кластеризации, прогнозирования и рекомендаций</p>
+            </div>
+          </div>
+          <div className="feature">
+            <span className="feature-icon">🔒</span>
+            <div>
+              <h4>Безопасность данных</h4>
+              <p>Защищенное соединение и контроль доступа к данным</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default HomePage

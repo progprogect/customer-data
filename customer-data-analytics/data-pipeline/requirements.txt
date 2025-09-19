@@ -1,0 +1,15 @@
+# Data Pipeline Dependencies
+# Минимальные зависимости для генерации и загрузки данных
+
+# Основные библиотеки (если понадобятся в будущем)
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Database connectivity
+psycopg2-binary>=2.9.0
+
+# Configuration
+python-dotenv>=1.0.0
+
+# Progress bars (опционально)
+tqdm>=4.65.0

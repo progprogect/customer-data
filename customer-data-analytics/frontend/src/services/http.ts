@@ -13,7 +13,7 @@ export async function httpGet<T>(url: string, params?: Record<string, unknown>, 
     return cache.get(key) as T
   }
 
-  const fullUrl = new URL(url, window.location.origin)
+  const fullUrl = new URL(url, 'http://localhost:8000')
   if (params) {
     for (const [k, v] of Object.entries(params)) fullUrl.searchParams.set(k, String(v ?? ''))
   }

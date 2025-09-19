@@ -1,0 +1,413 @@
+/* ======== RECOMMENDATIONS PAGE ======== */
+.recommendations-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.page-header h1 {
+  color: #f8fafc;
+  font-size: 36px;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+}
+
+.page-header p {
+  color: #cbd5e1;
+  font-size: 18px;
+  margin: 0;
+}
+
+.loading-skeleton {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.skeleton-card {
+  background: #334155;
+  border-radius: 12px;
+  height: 200px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.recommendations-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+/* User Cards Section */
+.user-cards-section h2 {
+  color: #f8fafc;
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0 0 24px 0;
+}
+
+.user-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 24px;
+}
+
+.user-card {
+  background: #334155;
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid #475569;
+}
+
+.user-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.user-header h3 {
+  color: #f8fafc;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.loading-badge {
+  background: #f59e0b;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.error-badge {
+  background: #ef4444;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.user-purchases,
+.user-recommendations {
+  margin-bottom: 20px;
+}
+
+.user-purchases h4,
+.user-recommendations h4 {
+  color: #e2e8f0;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+}
+
+.purchases-list,
+.recommendations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.purchase-item,
+.recommendation-item {
+  padding: 12px;
+  background: #475569;
+  border-radius: 8px;
+}
+
+.purchase-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.purchase-title {
+  color: #f8fafc;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.purchase-price {
+  color: #22c55e;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.rec-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.rec-title-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rec-title {
+  color: #f8fafc;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.rec-source-badges {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.source-badge {
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.rec-score {
+  background: #8b5cf6;
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.rec-explanations {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rec-explanation {
+  color: #cbd5e1;
+  font-size: 12px;
+  font-style: italic;
+}
+
+.empty-state {
+  padding: 16px;
+  text-align: center;
+  color: #64748b;
+  font-style: italic;
+  font-size: 14px;
+}
+
+/* Algorithms Section */
+.algorithms-section h2 {
+  color: #f8fafc;
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0 0 24px 0;
+}
+
+.algorithms-comparison {
+  background: #334155;
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid #475569;
+}
+
+.metrics-table {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 1.5fr 1.5fr 1fr;
+  gap: 16px;
+  align-items: center;
+}
+
+.table-header {
+  display: contents;
+  font-weight: 600;
+  color: #e2e8f0;
+  font-size: 14px;
+}
+
+.table-header span {
+  padding: 12px 0;
+  border-bottom: 1px solid #475569;
+}
+
+.table-row {
+  display: contents;
+}
+
+.table-row span {
+  padding: 12px 0;
+  font-size: 14px;
+}
+
+.algorithm-name {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.algorithm-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.algorithm-description {
+  color: #94a3b8;
+  font-size: 12px;
+  font-style: italic;
+}
+
+.metric-value {
+  color: #cbd5e1;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+}
+
+.metric-badge {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.metric-badge.best {
+  background-color: #22c55e;
+  color: #fff;
+}
+
+.metric-badge.good {
+  background-color: #3b82f6;
+  color: #fff;
+}
+
+.metric-badge.ok {
+  background-color: #f59e0b;
+  color: #fff;
+}
+
+.metric-badge.slow {
+  background-color: #ef4444;
+  color: #fff;
+}
+
+/* Top Products Section */
+.top-products-section h2 {
+  color: #f8fafc;
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0 0 24px 0;
+}
+
+.top-products-chart {
+  background: #334155;
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid #475569;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.product-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.product-info {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.product-rank {
+  color: #8b5cf6;
+  font-weight: 700;
+  font-size: 16px;
+  min-width: 30px;
+}
+
+.product-title {
+  color: #f8fafc;
+  font-weight: 500;
+  font-size: 14px;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.product-brand {
+  color: #cbd5e1;
+  font-size: 12px;
+  min-width: 60px;
+}
+
+.product-metrics {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.recommendation-bar {
+  height: 8px;
+  border-radius: 4px;
+  min-width: 20px;
+  transition: width 0.3s ease;
+}
+
+.recommendation-count {
+  color: #cbd5e1;
+  font-size: 14px;
+  font-weight: 600;
+  min-width: 40px;
+  text-align: right;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .recommendations-page {
+    padding: 0 16px;
+  }
+  
+  .user-cards-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .metrics-table {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .table-header span,
+  .table-row span {
+    padding: 8px 0;
+    text-align: left;
+  }
+  
+  .product-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}

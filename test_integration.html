@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Integration Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .loading { background-color: #fff3cd; border-color: #ffeaa7; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+        button { padding: 8px 16px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test API Integration</h1>
+    
+    <div class="test-section">
+        <h3>🔗 API Health Check</h3>
+        <button onclick="testHealth()">Test Health</button>
+        <div id="health-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>🛒 User Purchases</h3>
+        <button onclick="testUserPurchases()">Test User Purchases</button>
+        <div id="purchases-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>🔥 Top Products</h3>
+        <button onclick="testTopProducts()">Test Top Products</button>
+        <div id="top-products-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>🎯 Hybrid Recommendations</h3>
+        <button onclick="testHybridRecommendations()">Test Hybrid Recommendations</button>
+        <div id="hybrid-result"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+        
+        async function makeRequest(url, resultId) {
+            const resultDiv = document.getElementById(resultId);
+            resultDiv.className = 'loading';
+            resultDiv.innerHTML = '<p>Loading...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE}${url}`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.className = 'success';
+                    resultDiv.innerHTML = `
+                        <p>✅ Success (${response.status})</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${JSON.stringify(data)}`);
+                }
+            } catch (error) {
+                resultDiv.className = 'error';
+                resultDiv.innerHTML = `
+                    <p>❌ Error</p>
+                    <pre>${error.message}</pre>
+                `;
+            }
+        }
+        
+        function testHealth() {
+            makeRequest('/health', 'health-result');
+        }
+        
+        function testUserPurchases() {
+            makeRequest('/api/v1/reco/user-purchases?user_id=323&limit=3', 'purchases-result');
+        }
+        
+        function testTopProducts() {
+            makeRequest('/api/v1/reco/top-products?limit=3', 'top-products-result');
+        }
+        
+        function testHybridRecommendations() {
+            makeRequest('/api/v1/reco/user-hybrid?user_id=323&k=3', 'hybrid-result');
+        }
+        
+        // Auto-test on page load
+        window.onload = function() {
+            setTimeout(testHealth, 1000);
+        };
+    </script>
+</body>
+</html>

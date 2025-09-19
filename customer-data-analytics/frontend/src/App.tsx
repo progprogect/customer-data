@@ -9,6 +9,7 @@ function App() {
         <nav className="nav">
           <Link to="/">Главная</Link>
           <Link to="/segmentation">Сегментация</Link>
+          <Link to="/recommendations">Рекомендации</Link>
           <Link to="/purchase-prediction">Прогноз покупок</Link>
         </nav>
       </header>

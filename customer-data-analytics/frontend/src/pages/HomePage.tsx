@@ -37,15 +37,19 @@ function HomePage() {
             <div className="coming-soon-badge">Скоро</div>
           </div>
 
-          <div className="module-card module-coming-soon">
+          <Link to="/recommendations" className="module-card">
             <div className="module-icon">🎯</div>
             <h3>Рекомендации</h3>
             <p>
-              Персонализированные рекомендации товаров на основе 
-              машинного обучения.
+              Примеры персональных рекомендаций для пользователей на основе 
+              гибридной системы (CF + Content-based + Popularity).
             </p>
-            <div className="coming-soon-badge">Скоро</div>
-          </div>
+            <div className="module-stats">
+              <span className="stat">Hybrid алгоритм</span>
+              <span className="stat">Живые данные</span>
+              <span className="stat">3 источника</span>
+            </div>
+          </Link>
 
           <Link to="/purchase-prediction" className="module-card">
             <div className="module-icon">📈</div>

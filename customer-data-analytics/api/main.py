@@ -50,7 +50,7 @@ app = FastAPI(
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # React frontend
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],  # Vite frontend
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -58,7 +58,7 @@ app.add_middleware(
 
 # Include routers
 app.include_router(analytics.router, prefix="/api/v1/analytics", tags=["analytics"])
-app.include_router(recommendations.router, prefix="/api/v1/recommendations", tags=["recommendations"])
+app.include_router(recommendations.router, prefix="/api/v1/reco", tags=["recommendations"])
 app.include_router(users.router, prefix="/api/v1/users", tags=["users"])
 app.include_router(products.router, prefix="/api/v1/products", tags=["products"])
 app.include_router(segments.router, tags=["segments"])

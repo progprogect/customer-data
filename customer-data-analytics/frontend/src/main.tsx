@@ -6,6 +6,7 @@ import App from './App.tsx'
 import HomePage from './pages/HomePage.tsx'
 import SegmentationPage from './pages/SegmentationPage.tsx'
 import PurchasePredictionPage from './pages/PurchasePredictionPage.tsx'
+import RecommendationsPage from './pages/RecommendationsPage.tsx'
 import { FiltersProvider } from './store/filters.tsx'
 
 const router = createBrowserRouter([
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
       {
         path: 'purchase-prediction',
         element: <PurchasePredictionPage />,
+      },
+      {
+        path: 'recommendations',
+        element: <RecommendationsPage />,
       },
     ],
   },

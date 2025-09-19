@@ -298,3 +298,115 @@ class ModelInfo(BaseModel):
                 }
             }
         }
+
+
+class ChurnPredictionRequest(BaseModel):
+    """Модель запроса на предсказание оттока клиента"""
+    
+    user_id: int = Field(..., description="ID пользователя", gt=0)
+    snapshot_date: date = Field(..., description="Дата снапшота (ISO format)")
+    recency_days: Optional[float] = Field(
+        None, 
+        description="Дни с последней покупки",
+        ge=0
+    )
+    frequency_90d: int = Field(
+        ...,
+        description="Количество заказов за последние 90 дней", 
+        ge=0
+    )
+    monetary_180d: float = Field(
+        ...,
+        description="Потраченная сумма за последние 180 дней",
+        ge=0
+    )
+    aov_180d: Optional[float] = Field(
+        None,
+        description="Средний чек за последние 180 дней",
+        ge=0
+    )
+    orders_lifetime: int = Field(
+        ...,
+        description="Общее количество заказов за всё время",
+        ge=0
+    )
+    revenue_lifetime: float = Field(
+        ...,
+        description="Общая выручка за всё время",
+        ge=0
+    )
+    categories_unique: int = Field(
+        ...,
+        description="Количество уникальных категорий покупок",
+        ge=0
+    )
+
+    @validator('snapshot_date')
+    def validate_snapshot_date(cls, v):
+        """Валидация даты снапшота"""
+        from datetime import date, timedelta
+        max_date = date.today() + timedelta(days=30)
+        if v > max_date:
+            raise ValueError(f"Snapshot date cannot be more than 30 days in future: {v}")
+        return v
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "user_id": 123,
+                "snapshot_date": "2025-07-14",
+                "recency_days": 45.0,
+                "frequency_90d": 2,
+                "monetary_180d": 1500.0,
+                "aov_180d": 750.0,
+                "orders_lifetime": 5,
+                "revenue_lifetime": 3000.0,
+                "categories_unique": 3
+            }
+        }
+
+
+class ChurnPredictionResponse(BaseModel):
+    """Модель ответа API для предсказания оттока"""
+    
+    user_id: int = Field(..., description="ID пользователя")
+    snapshot_date: date = Field(..., description="Дата снапшота")
+    prob_churn_next_60d: float = Field(
+        ...,
+        description="Вероятность оттока в следующие 60 дней",
+        ge=0.0,
+        le=1.0
+    )
+    will_churn: bool = Field(
+        ...,
+        description="Предсказание оттока (True = уйдёт, False = останется)"
+    )
+    top_reasons: List[str] = Field(
+        ...,
+        description="Топ причины риска оттока на основе feature importance"
+    )
+    processing_time_ms: float = Field(
+        ...,
+        description="Время обработки в миллисекундах"
+    )
+    model_version: str = Field(
+        ...,
+        description="Версия модели churn prediction"
+    )
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "user_id": 123,
+                "snapshot_date": "2025-07-14",
+                "prob_churn_next_60d": 0.62,
+                "will_churn": True,
+                "top_reasons": [
+                    "низкая частота покупок за 90 дней",
+                    "снижение среднего чека",
+                    "давно не покупал"
+                ],
+                "processing_time_ms": 23.4,
+                "model_version": "20250919_205054"
+            }
+        }

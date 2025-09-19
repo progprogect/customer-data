@@ -1,0 +1,24 @@
+CHURN PREDICTION MODEL REPORT
+==================================================
+
+Дата создания: 2025-09-19 20:50:54
+Модель: XGBoost Classifier
+
+МЕТРИКИ КАЧЕСТВА:
+AUC-ROC: 0.6348
+Precision: 0.3370
+Recall: 0.4823
+F1-Score: 0.3968
+
+CONFUSION MATRIX:
+[[5921 2459]
+ [1342 1250]]
+
+ВАЖНОСТЬ ПРИЗНАКОВ:
+revenue_lifetime: 0.1806
+aov_180d: 0.1648
+monetary_180d: 0.1525
+categories_unique: 0.1517
+orders_lifetime: 0.1305
+frequency_90d: 0.1168
+recency_days: 0.1032

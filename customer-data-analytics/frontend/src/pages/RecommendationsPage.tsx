@@ -62,7 +62,7 @@ function RecommendationsPage() {
           userData.recent_purchases = userPurchases
           userData.loading = false
         } catch (error) {
-          console.error(`Error loading data for user ${userId}:`, error)
+          console.error(`Error loading data for user ${userId}:`, error instanceof Error ? error.message : String(error))
           userData.error = `Ошибка загрузки данных для пользователя ${userId}`
           userData.loading = false
         }
@@ -89,7 +89,7 @@ function RecommendationsPage() {
       setAlgorithmMetrics(metrics)
 
     } catch (error) {
-      console.error('Error loading recommendations data:', error)
+      console.error('Error loading recommendations data:', error instanceof Error ? error.message : String(error))
     } finally {
       setLoading(false)
     }

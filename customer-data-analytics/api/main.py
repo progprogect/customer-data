@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import uvicorn
 
-from routes import analytics, recommendations, users, products, segments, ml_predictions, real_users, simple_real_users, direct_db
+from routes import analytics, recommendations, users, products, segments, ml_predictions, churn_analytics, real_users, simple_real_users, direct_db
 from middleware.logging import setup_logging
 from services.ml_service import ml_service
 import sys
@@ -32,6 +32,14 @@ async def lifespan(app: FastAPI):
         print(f"✅ ML модель загружена: {ml_service.model_version}")
     else:
         print("⚠️ ML модель не загружена - ML endpoints будут недоступны")
+    
+    # Загрузка Churn модели
+    print("💔 Загрузка Churn модели...")
+    churn_model_loaded = ml_service.load_churn_model()
+    if churn_model_loaded:
+        print(f"✅ Churn модель загружена: {ml_service.churn_model_version}")
+    else:
+        print("⚠️ Churn модель не загружена - Churn endpoints будут недоступны")
     
     yield
     
@@ -63,6 +71,7 @@ app.include_router(users.router, prefix="/api/v1/users", tags=["users"])
 app.include_router(products.router, prefix="/api/v1/products", tags=["products"])
 app.include_router(segments.router, tags=["segments"])
 app.include_router(ml_predictions.router, prefix="/api/v1/ml", tags=["machine-learning"])
+app.include_router(churn_analytics.router, prefix="/api/v1/churn", tags=["churn-analytics"])
 app.include_router(real_users.router, prefix="/api/v1", tags=["real-data"])
 app.include_router(simple_real_users.router, prefix="/api/v1", tags=["simple-real-data"])
 app.include_router(direct_db.router, prefix="/api/v1", tags=["direct-db"])

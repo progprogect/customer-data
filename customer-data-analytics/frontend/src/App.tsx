@@ -11,6 +11,7 @@ function App() {
           <Link to="/segmentation">Сегментация</Link>
           <Link to="/recommendations">Рекомендации</Link>
           <Link to="/purchase-prediction">Прогноз покупок</Link>
+          <Link to="/churn-prediction">Отток клиентов</Link>
         </nav>
       </header>
       <main className="main">

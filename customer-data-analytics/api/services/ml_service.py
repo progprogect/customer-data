@@ -32,6 +32,7 @@ class MLModelService:
     
     def __init__(self):
         if not self._initialized:
+            # Purchase prediction model
             self.model = None
             self.scaler = None
             self.metadata = None
@@ -39,6 +40,13 @@ class MLModelService:
             self.feature_names = None
             self.fill_values = None
             self.load_timestamp = None
+            
+            # Churn prediction model
+            self.churn_model = None
+            self.churn_model_version = None
+            self.churn_load_timestamp = None
+            self.churn_feature_importance = None
+            
             self._initialized = True
             logger.info("🤖 ML Model Service инициализирован")
     
@@ -294,6 +302,247 @@ class MLModelService:
                     if feature_name in ['frequency_90d', 'monetary_180d', 'aov_180d', 
                                       'orders_lifetime', 'revenue_lifetime', 'categories_unique']:
                         errors.append(f"Feature '{feature_name}' cannot be negative: {value}")
+        
+        return errors
+    
+    def load_churn_model(self, model_path: Optional[str] = None) -> bool:
+        """
+        Загрузка churn prediction модели
+        
+        Args:
+            model_path: Путь к файлу модели (если не указан, ищем в ml-engine/models)
+            
+        Returns:
+            bool: Успешность загрузки
+        """
+        try:
+            if model_path is None:
+                model_path = self._find_churn_model()
+            
+            if not model_path or not os.path.exists(model_path):
+                raise FileNotFoundError(f"Churn модель не найдена: {model_path}")
+            
+            logger.info(f"📦 Загрузка churn модели из: {model_path}")
+            
+            # Загрузка модели
+            self.churn_model = joblib.load(model_path)
+            
+            # Устанавливаем версию и время загрузки
+            self.churn_model_version = datetime.now().strftime("%Y%m%d_%H%M%S")
+            self.churn_load_timestamp = datetime.now().isoformat()
+            
+            # Загружаем feature importance из отчета
+            self._load_churn_feature_importance()
+            
+            logger.info("✅ Churn модель успешно загружена!")
+            logger.info(f"   📌 Версия: {self.churn_model_version}")
+            logger.info(f"   🕐 Время загрузки: {self.churn_load_timestamp}")
+            
+            return True
+            
+        except Exception as e:
+            logger.error(f"❌ Ошибка загрузки churn модели: {e}")
+            self._reset_churn_model()
+            return False
+    
+    def _find_churn_model(self) -> Optional[str]:
+        """Поиск churn модели"""
+        try:
+            # Ищем в ml-engine/models директории
+            base_path = Path(__file__).parent.parent.parent / "ml-engine" / "models"
+            
+            if not base_path.exists():
+                logger.warning(f"Директория не найдена: {base_path}")
+                return None
+            
+            # Ищем файл churn_xgboost_model.pkl
+            model_file = base_path / "churn_xgboost_model.pkl"
+            
+            if not model_file.exists():
+                logger.warning("Churn модель не найдена")
+                return None
+            
+            logger.info(f"🔍 Найдена churn модель: {model_file}")
+            return str(model_file)
+            
+        except Exception as e:
+            logger.error(f"❌ Ошибка поиска churn модели: {e}")
+            return None
+    
+    def _load_churn_feature_importance(self):
+        """Загрузка feature importance из отчета"""
+        try:
+            base_path = Path(__file__).parent.parent.parent / "ml-engine" / "models"
+            report_file = base_path / "churn_model_report.txt"
+            
+            if report_file.exists():
+                with open(report_file, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                
+                # Парсим feature importance из отчета
+                self.churn_feature_importance = {}
+                lines = content.split('\n')
+                for line in lines:
+                    if ': 0.' in line and any(feature in line for feature in [
+                        'recency_days', 'frequency_90d', 'monetary_180d', 'aov_180d',
+                        'orders_lifetime', 'revenue_lifetime', 'categories_unique'
+                    ]):
+                        parts = line.split(':')
+                        if len(parts) == 2:
+                            feature = parts[0].strip()
+                            importance = float(parts[1].strip())
+                            self.churn_feature_importance[feature] = importance
+                
+                logger.info(f"📊 Загружена feature importance: {len(self.churn_feature_importance)} признаков")
+            else:
+                # Используем дефолтные значения из обучения
+                self.churn_feature_importance = {
+                    'revenue_lifetime': 0.1806,
+                    'aov_180d': 0.1648,
+                    'monetary_180d': 0.1525,
+                    'categories_unique': 0.1517,
+                    'orders_lifetime': 0.1305,
+                    'frequency_90d': 0.1168,
+                    'recency_days': 0.1032
+                }
+                logger.info("📊 Использованы дефолтные значения feature importance")
+                
+        except Exception as e:
+            logger.error(f"❌ Ошибка загрузки feature importance: {e}")
+            self.churn_feature_importance = {}
+    
+    def _reset_churn_model(self):
+        """Сброс churn модели"""
+        self.churn_model = None
+        self.churn_model_version = None
+        self.churn_load_timestamp = None
+        self.churn_feature_importance = None
+    
+    def is_churn_model_loaded(self) -> bool:
+        """Проверка загружена ли churn модель"""
+        return self.churn_model is not None
+    
+    def predict_churn(self, features: Dict[str, Any]) -> Tuple[float, bool, List[str]]:
+        """
+        Предсказание оттока клиента
+        
+        Args:
+            features: Словарь с признаками клиента
+            
+        Returns:
+            Tuple[float, bool, List[str]]: (вероятность, предсказание, причины)
+        """
+        if not self.is_churn_model_loaded():
+            raise RuntimeError("Churn модель не загружена")
+        
+        try:
+            # Подготовка данных
+            feature_df = pd.DataFrame([{
+                'recency_days': features.get('recency_days', 999),  # 999 если не покупал
+                'frequency_90d': features.get('frequency_90d', 0),
+                'monetary_180d': features.get('monetary_180d', 0),
+                'aov_180d': features.get('aov_180d', 0),
+                'orders_lifetime': features.get('orders_lifetime', 0),
+                'revenue_lifetime': features.get('revenue_lifetime', 0),
+                'categories_unique': features.get('categories_unique', 0)
+            }])
+            
+            # Предсказание
+            churn_probability = self.churn_model.predict_proba(feature_df)[0][1]
+            will_churn = churn_probability >= 0.6  # threshold
+            
+            # Генерируем причины на основе feature importance и значений
+            top_reasons = self._generate_churn_reasons(features, churn_probability)
+            
+            return churn_probability, will_churn, top_reasons
+            
+        except Exception as e:
+            logger.error(f"❌ Ошибка предсказания оттока: {e}")
+            raise
+    
+    def _generate_churn_reasons(self, features: Dict[str, Any], probability: float) -> List[str]:
+        """Генерация причин риска оттока"""
+        reasons = []
+        
+        # Пороги для определения проблемных значений
+        thresholds = {
+            'recency_days': 30,      # больше 30 дней
+            'frequency_90d': 1,      # меньше 2 заказов
+            'monetary_180d': 500,    # меньше 500 рублей
+            'aov_180d': 200,         # меньше 200 рублей
+            'orders_lifetime': 2,    # меньше 3 заказов
+            'revenue_lifetime': 1000, # меньше 1000 рублей
+            'categories_unique': 1   # меньше 2 категорий
+        }
+        
+        # Проверяем каждый признак
+        if features.get('recency_days', 0) > thresholds['recency_days']:
+            reasons.append("давно не покупал")
+        
+        if features.get('frequency_90d', 0) < thresholds['frequency_90d']:
+            reasons.append("низкая частота покупок за 90 дней")
+        
+        if features.get('monetary_180d', 0) < thresholds['monetary_180d']:
+            reasons.append("низкие траты за 180 дней")
+        
+        if features.get('aov_180d', 0) < thresholds['aov_180d']:
+            reasons.append("снижение среднего чека")
+        
+        if features.get('orders_lifetime', 0) < thresholds['orders_lifetime']:
+            reasons.append("мало заказов за всё время")
+        
+        if features.get('revenue_lifetime', 0) < thresholds['revenue_lifetime']:
+            reasons.append("низкая общая выручка")
+        
+        if features.get('categories_unique', 0) < thresholds['categories_unique']:
+            reasons.append("узкий ассортимент покупок")
+        
+        # Если причин нет, добавляем общую
+        if not reasons:
+            if probability > 0.7:
+                reasons.append("высокий общий риск оттока")
+            elif probability > 0.5:
+                reasons.append("средний риск оттока")
+            else:
+                reasons.append("стабильный клиент")
+        
+        # Ограничиваем количество причин
+        return reasons[:3]
+    
+    def validate_churn_features(self, features: Dict[str, Any]) -> List[str]:
+        """
+        Валидация признаков для churn prediction
+        
+        Args:
+            features: Словарь с признаками
+            
+        Returns:
+            List[str]: Список ошибок валидации
+        """
+        errors = []
+        
+        churn_feature_names = [
+            'recency_days', 'frequency_90d', 'monetary_180d', 'aov_180d',
+            'orders_lifetime', 'revenue_lifetime', 'categories_unique'
+        ]
+        
+        for feature_name in churn_feature_names:
+            if feature_name in features:
+                value = features[feature_name]
+                
+                # Проверяем что значение числовое или None
+                if value is not None and not isinstance(value, (int, float)):
+                    errors.append(f"Feature '{feature_name}' must be numeric, got {type(value).__name__}")
+                
+                # Проверяем на отрицательные значения
+                if value is not None and value < 0:
+                    errors.append(f"Feature '{feature_name}' cannot be negative: {value}")
+        
+        # Проверяем обязательные поля
+        required_fields = ['frequency_90d', 'monetary_180d', 'orders_lifetime', 'revenue_lifetime', 'categories_unique']
+        for field in required_fields:
+            if field not in features or features[field] is None:
+                errors.append(f"Required field '{field}' is missing or null")
         
         return errors
 

@@ -15,7 +15,7 @@ from datetime import datetime
 
 from models.ml_models import (
     PredictionRequest, PredictionResponse, PredictionResult,
-    ThresholdRequest, ModelInfo
+    ThresholdRequest, ModelInfo, ChurnPredictionRequest, ChurnPredictionResponse
 )
 from services.ml_service import ml_service
 
@@ -343,3 +343,87 @@ async def ml_health_check():
             "reason": f"error: {str(e)}",
             "timestamp": datetime.now().isoformat()
         }
+
+
+@router.post(
+    "/churn-prediction",
+    response_model=ChurnPredictionResponse,
+    summary="Predict churn probability",
+    description="Предсказание вероятности оттока клиента в следующие 60 дней"
+)
+async def predict_churn(
+    request: ChurnPredictionRequest,
+    api_key: str = Depends(verify_api_key)
+) -> ChurnPredictionResponse:
+    """
+    Endpoint для предсказания оттока клиентов
+    
+    Args:
+        request: Запрос с данными пользователя
+        api_key: API ключ для аутентификации
+        
+    Returns:
+        ChurnPredictionResponse: Результат предсказания оттока
+    """
+    start_time = time.time()
+    
+    try:
+        # Логируем запрос
+        logger.info(f"💔 Churn prediction request for user {request.user_id}")
+        
+        # Проверяем что churn модель загружена
+        if not ml_service.is_churn_model_loaded():
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="Churn prediction model is not loaded. Please contact administrator."
+            )
+        
+        # Подготовка данных для предсказания
+        features = {
+            'recency_days': request.recency_days,
+            'frequency_90d': request.frequency_90d,
+            'monetary_180d': request.monetary_180d,
+            'aov_180d': request.aov_180d,
+            'orders_lifetime': request.orders_lifetime,
+            'revenue_lifetime': request.revenue_lifetime,
+            'categories_unique': request.categories_unique
+        }
+        
+        # Валидация признаков
+        feature_errors = ml_service.validate_churn_features(features)
+        if feature_errors:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Feature validation failed: {'; '.join(feature_errors)}"
+            )
+        
+        # Получаем предсказание оттока
+        churn_probability, will_churn, top_reasons = ml_service.predict_churn(features)
+        
+        # Общее время выполнения
+        total_time_ms = (time.time() - start_time) * 1000
+        
+        # Формируем ответ
+        response = ChurnPredictionResponse(
+            user_id=request.user_id,
+            snapshot_date=request.snapshot_date,
+            prob_churn_next_60d=float(churn_probability),
+            will_churn=bool(will_churn),
+            top_reasons=top_reasons,
+            processing_time_ms=total_time_ms,
+            model_version=ml_service.churn_model_version
+        )
+        
+        logger.info(f"✅ Churn prediction completed: prob={churn_probability:.3f}, will_churn={will_churn}, {total_time_ms:.1f}ms")
+        
+        return response
+        
+    except HTTPException:
+        # Повторно выбрасываем HTTP exceptions
+        raise
+    except Exception as e:
+        logger.error(f"❌ Unexpected error in churn prediction: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Internal server error: {str(e)}"
+        )

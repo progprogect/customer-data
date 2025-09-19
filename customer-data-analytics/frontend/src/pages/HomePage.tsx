@@ -64,6 +64,20 @@ function HomePage() {
               <span className="stat">Real-time API</span>
             </div>
           </Link>
+
+          <Link to="/churn-prediction" className="module-card">
+            <div className="module-icon">💔</div>
+            <h3>Отток клиентов</h3>
+            <p>
+              Предсказание риска оттока клиентов в следующие 60 дней 
+              с анализом причин и рекомендациями.
+            </p>
+            <div className="module-stats">
+              <span className="stat">XGBoost модель</span>
+              <span className="stat">Анализ причин</span>
+              <span className="stat">KPI дашборд</span>
+            </div>
+          </Link>
         </div>
       </div>
 

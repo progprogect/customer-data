@@ -7,6 +7,7 @@ import HomePage from './pages/HomePage.tsx'
 import SegmentationPage from './pages/SegmentationPage.tsx'
 import PurchasePredictionPage from './pages/PurchasePredictionPage.tsx'
 import RecommendationsPage from './pages/RecommendationsPage.tsx'
+import ChurnPredictionPage from './pages/ChurnPredictionPage.tsx'
 import { FiltersProvider } from './store/filters.tsx'
 
 const router = createBrowserRouter([
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
       {
         path: 'recommendations',
         element: <RecommendationsPage />,
+      },
+      {
+        path: 'churn-prediction',
+        element: <ChurnPredictionPage />,
       },
     ],
   },

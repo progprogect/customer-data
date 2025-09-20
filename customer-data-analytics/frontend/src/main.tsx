@@ -10,6 +10,7 @@ import RecommendationsPage from './pages/RecommendationsPage.tsx'
 import ChurnPredictionPage from './pages/ChurnPredictionPage.tsx'
 import PriceElasticityPage from './pages/PriceElasticityPage.tsx'
 import AnomaliesPage from './pages/AnomaliesPage.tsx'
+import LTVPage from './pages/LTVPage.tsx'
 import { FiltersProvider } from './store/filters.tsx'
 
 const router = createBrowserRouter([
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
       {
         path: 'anomalies',
         element: <AnomaliesPage />,
+      },
+      {
+        path: 'ltv',
+        element: <LTVPage />,
       },
     ],
   },

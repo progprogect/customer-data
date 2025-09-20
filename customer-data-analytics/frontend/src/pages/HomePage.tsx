@@ -106,6 +106,20 @@ function HomePage() {
               <span className="stat">Триггеры</span>
             </div>
           </Link>
+
+          <Link to="/ltv" className="module-card">
+            <div className="module-icon">💰</div>
+            <h3>LTV Анализ</h3>
+            <p>
+              Анализ ценности клиентов (Lifetime Value) по горизонтам 
+              3, 6, 12 месяцев и за весь период для расчета CAC.
+            </p>
+            <div className="module-stats">
+              <span className="stat">Ретроспективный LTV</span>
+              <span className="stat">4 горизонта</span>
+              <span className="stat">CAC расчеты</span>
+            </div>
+          </Link>
         </div>
       </div>
 

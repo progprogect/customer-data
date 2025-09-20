@@ -13,6 +13,7 @@ function App() {
           <Link to="/purchase-prediction">Прогноз покупок</Link>
           <Link to="/churn-prediction">Отток клиентов</Link>
           <Link to="/price-elasticity">Ценовая эластичность</Link>
+          <Link to="/anomalies">Аномалии</Link>
         </nav>
       </header>
       <main className="main">

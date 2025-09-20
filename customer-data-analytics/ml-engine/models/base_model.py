@@ -44,3 +44,4 @@ class BaseMLModel(ABC):
     def get_metrics(self) -> Dict[str, float]:
         """Получение метрик модели"""
         return self.metrics
+

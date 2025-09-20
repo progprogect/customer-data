@@ -93,3 +93,4 @@ class ChurnPredictionModel(BaseMLModel):
             raise ValueError("Модель не обучена")
         
         return self.feature_importance
+

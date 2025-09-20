@@ -92,6 +92,20 @@ function HomePage() {
               <span className="stat">Визуализация</span>
             </div>
           </Link>
+
+          <Link to="/anomalies" className="module-card">
+            <div className="module-icon">🚨</div>
+            <h3>Аномалии поведения</h3>
+            <p>
+              Детекция необычных паттернов в поведении пользователей 
+              с помощью z-score и ratio анализа по неделям.
+            </p>
+            <div className="module-stats">
+              <span className="stat">Z-score анализ</span>
+              <span className="stat">Временные ряды</span>
+              <span className="stat">Триггеры</span>
+            </div>
+          </Link>
         </div>
       </div>
 

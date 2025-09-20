@@ -142,3 +142,4 @@ psql -d customer_data -f seed/01_categories.sql
 psql -d customer_data -c "\\copy products FROM 'seed/02_products.csv' CSV HEADER NULL 'NULL';"
 psql -d customer_data -c "\\copy users FROM 'seed/04_users.csv' CSV HEADER NULL 'NULL';"
 ```
+

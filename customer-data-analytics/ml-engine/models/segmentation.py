@@ -70,3 +70,4 @@ class UserSegmentationModel(BaseMLModel):
             self.scaler.inverse_transform(self.model.cluster_centers_),
             columns=[f"feature_{i}" for i in range(self.model.cluster_centers_.shape[1])]
         )
+

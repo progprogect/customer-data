@@ -214,3 +214,4 @@ async def show_anomaly_detection(query):
         parse_mode='HTML',
         reply_markup=reply_markup
     )
+

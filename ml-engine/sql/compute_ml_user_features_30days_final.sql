@@ -239,3 +239,4 @@ ON CONFLICT (user_id, snapshot_date) DO UPDATE SET
   revenue_lifetime  = EXCLUDED.revenue_lifetime,
   categories_unique = EXCLUDED.categories_unique
 ;
+

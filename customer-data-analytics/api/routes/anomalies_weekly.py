@@ -211,6 +211,32 @@ async def get_user_anomalies(
                 insufficient_history=row.insufficient_history
             ))
         
+        # Получаем данные поведения пользователя
+        behavior_query = text("""
+            SELECT 
+                week_start_date,
+                orders_count,
+                monetary_sum,
+                categories_count,
+                aov_weekly
+            FROM ml_user_behavior_weekly
+            WHERE user_id = :user_id
+            ORDER BY week_start_date DESC
+            LIMIT :weeks
+        """)
+        behavior_result = db.execute(behavior_query, {'user_id': user_id, 'weeks': weeks}).fetchall()
+        
+        # Преобразуем данные поведения
+        behavior_data = []
+        for row in behavior_result:
+            behavior_data.append({
+                "week_start": str(row.week_start_date),
+                "orders_count": row.orders_count,
+                "monetary_sum": float(row.monetary_sum),
+                "categories_count": row.categories_count,
+                "aov_weekly": float(row.aov_weekly) if row.aov_weekly else None
+            })
+        
         # Получаем статистику пользователя
         stats_query = text("""
             SELECT 
@@ -249,6 +275,7 @@ async def get_user_anomalies(
         return UserAnomaliesResponse(
             user_id=user_id,
             anomalies=anomalies,
+            behavior_data=behavior_data,
             total_anomalies=stats_result.anomaly_weeks,
             anomaly_rate=anomaly_rate,
             top_triggers=top_triggers

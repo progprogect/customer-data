@@ -101,3 +101,4 @@ class RecommendationModel(BaseMLModel):
         content_recs = self._content_based_filtering(user_id, n_recommendations // 2)
         
         return collab_recs + content_recs
+

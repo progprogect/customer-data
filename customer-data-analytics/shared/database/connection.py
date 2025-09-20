@@ -47,3 +47,4 @@ def get_db():
 def get_db_session():
     """Получение сессии базы данных (синхронная версия)"""
     return SessionLocal()
+

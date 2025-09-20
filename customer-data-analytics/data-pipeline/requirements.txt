@@ -13,3 +13,4 @@ python-dotenv>=1.0.0
 
 # Progress bars (опционально)
 tqdm>=4.65.0
+

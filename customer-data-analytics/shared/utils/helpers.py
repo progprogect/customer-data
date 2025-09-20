@@ -130,3 +130,4 @@ def set_nested_value(data: Dict[str, Any], key_path: str, value: Any) -> None:
         current = current[key]
     
     current[keys[-1]] = value
+

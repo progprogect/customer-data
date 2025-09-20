@@ -212,3 +212,4 @@ async def show_user_segments(query):
                 [InlineKeyboardButton("⬅️ Назад", callback_data="users_main")]
             ])
         )
+

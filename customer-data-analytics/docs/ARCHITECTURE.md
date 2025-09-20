@@ -208,3 +208,4 @@ API → Frontend/Telegram Bot → Пользователи
 - Message queues
 - Event sourcing
 - CQRS pattern
+

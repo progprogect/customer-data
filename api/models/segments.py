@@ -64,3 +64,4 @@ class ClusterMeta(BaseModel):
 class SegmentsMetaResponse(BaseModel):
     """Ответ API для метаданных сегментов"""
     clusters: List[ClusterMeta] = Field(..., description="Список кластеров")
+

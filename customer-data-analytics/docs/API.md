@@ -343,3 +343,4 @@ curl -X GET "http://localhost:8000/api/v1/products/search/?query=iphone&limit=10
 Интерактивная документация API доступна по адресу:
 - **Swagger UI**: http://localhost:8000/docs
 - **ReDoc**: http://localhost:8000/redoc
+

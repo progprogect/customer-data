@@ -59,3 +59,4 @@ settings = Settings()
 def get_settings() -> Settings:
     """Получение настроек"""
     return settings
+

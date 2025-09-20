@@ -135,3 +135,4 @@ class PriceElasticityModel(BaseMLModel):
             "target_demand": target_demand,
             "price_change_percent": ((optimal_price - current_price) / current_price) * 100
         }
+

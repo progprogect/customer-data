@@ -54,3 +54,4 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
     
     logger.info(f"User {user.id} started the bot")
+

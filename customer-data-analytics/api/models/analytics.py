@@ -196,10 +196,20 @@ class UserAnomaliesRequest(BaseModel):
     min_score: float = Field(0.0, description="Минимальный anomaly_score")
 
 
+class UserBehaviorData(BaseModel):
+    """Модель данных поведения пользователя"""
+    week_start: str = Field(..., description="Начало недели (YYYY-MM-DD)")
+    orders_count: int = Field(..., description="Количество заказов за неделю")
+    monetary_sum: float = Field(..., description="Сумма покупок за неделю")
+    categories_count: int = Field(..., description="Количество уникальных категорий")
+    aov_weekly: Optional[float] = Field(None, description="Средний чек за неделю")
+
+
 class UserAnomaliesResponse(BaseModel):
     """Ответ с историей аномалий пользователя"""
     user_id: int = Field(..., description="ID пользователя")
     anomalies: List[UserAnomalyWeekly] = Field(..., description="История аномалий")
+    behavior_data: List[UserBehaviorData] = Field(..., description="Данные поведения")
     total_anomalies: int = Field(..., description="Общее количество аномалий")
     anomaly_rate: float = Field(..., description="Процент аномальных недель")
     top_triggers: List[Dict[str, Any]] = Field(..., description="Топ триггеров")

@@ -64,3 +64,4 @@ def create_yes_no_buttons(yes_callback: str, no_callback: str):
         ]
     ]
     return InlineKeyboardMarkup(keyboard)
+

@@ -55,3 +55,4 @@ COMMENT ON COLUMN ml_user_features_daily_all.aov_180d IS 'Средний чек 
 COMMENT ON COLUMN ml_user_features_daily_all.orders_lifetime IS 'Общее количество заказов за всё время';
 COMMENT ON COLUMN ml_user_features_daily_all.revenue_lifetime IS 'Общая сумма заказов за всё время';
 COMMENT ON COLUMN ml_user_features_daily_all.categories_unique IS 'Количество уникальных категорий за последние 180 дней';
+

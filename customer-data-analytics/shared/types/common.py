@@ -142,3 +142,4 @@ class APIError(BaseModel):
     error_message: str
     details: Optional[Dict[str, Any]] = None
     timestamp: datetime = Field(default_factory=datetime.now)
+

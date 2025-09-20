@@ -7,11 +7,11 @@ import React, { useState, useEffect } from 'react';
 import { type UserAnomalyWeekly, anomaliesApi } from '../services/anomalies';
 
 interface AnomaliesTableProps {
-  onUserClick: (userId: number) => void;
 }
 
-const AnomaliesTable: React.FC<AnomaliesTableProps> = ({ onUserClick }) => {
+const AnomaliesTable: React.FC<AnomaliesTableProps> = () => {
   const [anomalies, setAnomalies] = useState<UserAnomalyWeekly[]>([]);
+  const [behaviorData, setBehaviorData] = useState<Map<string, any>>(new Map());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -38,6 +38,30 @@ const AnomaliesTable: React.FC<AnomaliesTableProps> = ({ onUserClick }) => {
       setAnomalies(response.anomalies);
       setTotalCount(response.total_count);
       setWeekDate(response.week_date);
+      
+      // Загружаем данные поведения для каждого пользователя
+      const behaviorMap = new Map();
+      for (const anomaly of response.anomalies) {
+        try {
+          const userResponse = await anomaliesApi.getUserAnomalies(anomaly.user_id, 2, 0.0);
+          if (userResponse.behavior_data.length > 0) {
+            const currentWeek = userResponse.behavior_data.find(b => b.week_start === anomaly.week_start);
+            const prevWeek = userResponse.behavior_data.find(b => 
+              new Date(b.week_start) < new Date(anomaly.week_start)
+            );
+            
+            if (currentWeek) {
+              behaviorMap.set(`${anomaly.user_id}-${anomaly.week_start}`, {
+                current: currentWeek,
+                previous: prevWeek
+              });
+            }
+          }
+        } catch (err) {
+          console.warn(`Failed to load behavior data for user ${anomaly.user_id}:`, err);
+        }
+      }
+      setBehaviorData(behaviorMap);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Ошибка загрузки данных');
     } finally {
@@ -62,6 +86,38 @@ const AnomaliesTable: React.FC<AnomaliesTableProps> = ({ onUserClick }) => {
 
   const formatAnomalyScore = (score: number) => {
     return score.toFixed(2);
+  };
+
+  const getBehaviorContext = (userId: number, weekStart: string) => {
+    const key = `${userId}-${weekStart}`;
+    const data = behaviorData.get(key);
+    if (!data || !data.current) return null;
+    
+    const { current, previous } = data;
+    const ordersChange = previous ? 
+      ((current.orders_count - previous.orders_count) / previous.orders_count * 100) : 0;
+    const monetaryChange = previous ? 
+      ((current.monetary_sum - previous.monetary_sum) / previous.monetary_sum * 100) : 0;
+    const categoriesChange = previous ? 
+      ((current.categories_count - previous.categories_count) / previous.categories_count * 100) : 0;
+    
+    return {
+      orders: {
+        current: current.orders_count,
+        previous: previous?.orders_count || 0,
+        change: ordersChange
+      },
+      monetary: {
+        current: current.monetary_sum,
+        previous: previous?.monetary_sum || 0,
+        change: monetaryChange
+      },
+      categories: {
+        current: current.categories_count,
+        previous: previous?.categories_count || 0,
+        change: categoriesChange
+      }
+    };
   };
 
   const totalPages = Math.ceil(totalCount / itemsPerPage);
@@ -103,40 +159,74 @@ const AnomaliesTable: React.FC<AnomaliesTableProps> = ({ onUserClick }) => {
             <tr>
               <th>Пользователь</th>
               <th>Неделя</th>
-              <th>Скор аномалии</th>
+              <th>Изменения</th>
               <th>Триггеры</th>
-              <th>Действия</th>
             </tr>
           </thead>
           <tbody>
-            {anomalies.map((anomaly) => (
-              <tr key={`${anomaly.user_id}-${anomaly.week_start}`} className="anomaly-row">
-                <td className="user-cell">
-                  <span className="user-id">#{anomaly.user_id}</span>
-                </td>
-                <td className="week-cell">
-                  {anomaly.week_start}
-                </td>
-                <td className="score-cell">
-                  <span className={`score ${anomaly.anomaly_score > 10 ? 'high' : anomaly.anomaly_score > 5 ? 'medium' : 'low'}`}>
-                    {formatAnomalyScore(anomaly.anomaly_score)}
-                  </span>
-                </td>
-                <td className="triggers-cell">
-                  <div className="triggers">
-                    {formatTriggers(anomaly.triggers)}
-                  </div>
-                </td>
-                <td className="actions-cell">
-                  <button 
-                    onClick={() => onUserClick(anomaly.user_id)}
-                    className="view-details-btn"
-                  >
-                    📊 Детали
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {anomalies.map((anomaly) => {
+              const context = getBehaviorContext(anomaly.user_id, anomaly.week_start);
+              return (
+                <tr key={`${anomaly.user_id}-${anomaly.week_start}`} className="anomaly-row">
+                  <td className="user-cell">
+                    <span className="user-id">#{anomaly.user_id}</span>
+                  </td>
+                  <td className="week-cell">
+                    {anomaly.week_start}
+                  </td>
+                  <td className="changes-cell">
+                    {context ? (
+                      <div className="behavior-changes">
+                        <div className="change-item">
+                          <span className="change-icon">🛒</span>
+                          <span className="change-text">
+                            {context.orders.previous} → {context.orders.current}
+                            {context.orders.change !== 0 && (
+                              <span className={`change-percent ${context.orders.change > 0 ? 'positive' : 'negative'}`}>
+                                {context.orders.change > 0 ? '+' : ''}{context.orders.change.toFixed(0)}%
+                              </span>
+                            )}
+                          </span>
+                        </div>
+                        <div className="change-item">
+                          <span className="change-icon">💰</span>
+                          <span className="change-text">
+                            ${context.monetary.previous.toFixed(0)} → ${context.monetary.current.toFixed(0)}
+                            {context.monetary.change !== 0 && (
+                              <span className={`change-percent ${context.monetary.change > 0 ? 'positive' : 'negative'}`}>
+                                {context.monetary.change > 0 ? '+' : ''}{context.monetary.change.toFixed(0)}%
+                              </span>
+                            )}
+                          </span>
+                        </div>
+                        <div className="change-item">
+                          <span className="change-icon">📦</span>
+                          <span className="change-text">
+                            {context.categories.previous} → {context.categories.current}
+                            {context.categories.change !== 0 && (
+                              <span className={`change-percent ${context.categories.change > 0 ? 'positive' : 'negative'}`}>
+                                {context.categories.change > 0 ? '+' : ''}{context.categories.change.toFixed(0)}%
+                              </span>
+                            )}
+                          </span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="no-context">
+                        <span className="score ${anomaly.anomaly_score > 10 ? 'high' : anomaly.anomaly_score > 5 ? 'medium' : 'low'}">
+                          Скор: {formatAnomalyScore(anomaly.anomaly_score)}
+                        </span>
+                      </div>
+                    )}
+                  </td>
+                  <td className="triggers-cell">
+                    <div className="triggers">
+                      {formatTriggers(anomaly.triggers)}
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

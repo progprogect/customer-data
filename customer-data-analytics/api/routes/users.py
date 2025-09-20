@@ -121,3 +121,4 @@ async def get_user_segments():
         return segments
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+

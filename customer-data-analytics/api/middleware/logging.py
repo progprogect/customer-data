@@ -27,3 +27,4 @@ def setup_logging():
         format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{function}:{line} - {message}",
         level="DEBUG"
     )
+

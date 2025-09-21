@@ -146,3 +146,4 @@ http://localhost:5173/price-elasticity
 
 **Проект готов к продакшену!** 🚀
 
+

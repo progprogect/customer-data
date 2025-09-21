@@ -27,16 +27,6 @@ function HomePage() {
             </div>
           </Link>
 
-          <div className="module-card module-coming-soon">
-            <div className="module-icon">🛒</div>
-            <h3>Анализ продаж</h3>
-            <p>
-              Аналитика товаров, категорий, трендов продаж 
-              и поведения покупателей.
-            </p>
-            <div className="coming-soon-badge">Скоро</div>
-          </div>
-
           <Link to="/recommendations" className="module-card">
             <div className="module-icon">🎯</div>
             <h3>Рекомендации</h3>
